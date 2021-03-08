@@ -1,4 +1,3 @@
-// Add git add and commit test.
 #ifndef LAB0_QUEUE_H
 #define LAB0_QUEUE_H
 
