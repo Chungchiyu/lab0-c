@@ -14,7 +14,6 @@ queue_t *q_new()
     queue_t *q = malloc(sizeof(queue_t));
     /* TODO: What if malloc returned NULL? */
     if (!q) {
-        report_event(MSG_FATAL, "Cannot allocate any more memory");
         return NULL;
     }
     q->head = NULL;
@@ -35,7 +34,7 @@ void q_free(queue_t *q)
     while (q->head) {
         list_ele_t *tmp = q->head;
         q->head = q->head->next;
-        free(tmp->payload);
+        free(tmp->value);
         free(tmp);
     }
 
