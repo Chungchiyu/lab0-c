@@ -54,22 +54,22 @@ bool q_insert_head(queue_t *q, char *s)
     if (!q)
         return false;
 
-    int payload_size = strlen(s) + 1;
+    int value_size = strlen(s) + 1;
 
     list_ele_t *newh;
-    newh = malloc(sizeof(list_ele_t) + payload_size);
+    newh = malloc(sizeof(list_ele_t) + value_size);
 
     if (!newh)
         return false;
 
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
-    while (q->head->next) {
-        q->tail = q->head->next;
-    }
-    // q-tail->next = NULL;
+
     newh->next = q->head;
     q->head = newh;
+
+    if (q->size == 0)
+        q->tail = newh;
     q->size++;
     return true;
 }
@@ -83,10 +83,27 @@ bool q_insert_head(queue_t *q, char *s)
  */
 bool q_insert_tail(queue_t *q, char *s)
 {
+    int value_size = strlen(s) + 1;
+
+    list_ele_t *newt;
+    newt = malloc(sizeof(list_ele_t) + value_size);
+
+    if (!newt)
+        return false;
+
+    if (q->size == 0)
+        q_insert_head(q, s);
+    else {
+        newt->next = q->tail->next;
+        q->tail->next = newt;
+        q->tail = newt;
+        q->size++;
+    }
+
     /* TODO: You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
     /* TODO: Remove the above comment when you are about to implement. */
-    return false;
+    return true;
 }
 
 /*
