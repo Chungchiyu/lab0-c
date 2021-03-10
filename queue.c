@@ -94,7 +94,7 @@ bool q_insert_tail(queue_t *q, char *s)
     if (!newt)
         return false;
 
-    if (q->size == 0)
+    if (!q->head)
         q_insert_head(q, s);
     else {
         newt->next = q->tail->next;
@@ -150,6 +150,9 @@ int q_size(queue_t *q)
     /* TODO: You need to write the code for this function */
     /* Remember: It should operate in O(1) time */
     /* TODO: Remove the above comment when you are about to implement. */
+    if (!q)
+        return 0;
+
     return q->size;
 }
 
@@ -164,6 +167,19 @@ void q_reverse(queue_t *q)
 {
     /* TODO: You need to write the code for this function */
     /* TODO: Remove the above comment when you are about to implement. */
+    if (!q || !q->head || q->size == 1)
+        return;
+
+    list_ele_t *prev = NULL, *now = q->head, *next = NULL;
+
+    while (now != NULL) {
+        next = now->next;
+        now->next = prev;
+        prev = now;
+        now = next;
+    }
+
+    return;
 }
 
 /*
