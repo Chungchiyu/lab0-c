@@ -199,6 +199,10 @@ void q_sort(queue_t *q)
         return;
 
     merge_sort(&(q->head));
+
+    while (q->tail->next) {
+        q->tail = q->tail->next;
+    }
 }
 
 void merge_sort(list_ele_t **head)
