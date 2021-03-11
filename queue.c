@@ -70,6 +70,7 @@ bool q_insert_head(queue_t *q, char *s)
 
     if (q->size == 0)
         q->tail = newh;
+    q->head->size = value_size - 1;
     q->size++;
     return true;
 }
@@ -101,6 +102,7 @@ bool q_insert_tail(queue_t *q, char *s)
         q->tail->next = newt;
         q->tail = newt;
         q->size++;
+        q->head->size = value_size - 1;
     }
 
     /* TODO: You need to write the complete code for this function */
@@ -136,7 +138,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     q->head = q->head->next;
     free(tmp->value);
     free(tmp);
-    q->value--;
+    q->size--;
 
     return true;
 }
@@ -167,7 +169,7 @@ void q_reverse(queue_t *q)
 {
     /* TODO: You need to write the code for this function */
     /* TODO: Remove the above comment when you are about to implement. */
-    if (!q || !q->head || q->size == 1)
+    if (!q || q->size < 2)
         return;
 
     list_ele_t *prev = NULL, *now = q->head, *next = NULL;
@@ -178,6 +180,8 @@ void q_reverse(queue_t *q)
         prev = now;
         now = next;
     }
+    q->tail = q->head;
+    q->head = prev;
 
     return;
 }
@@ -191,4 +195,51 @@ void q_sort(queue_t *q)
 {
     /* TODO: You need to write the code for this function */
     /* TODO: Remove the above comment when you are about to implement. */
+    if (!q || q->size < 2)
+        return;
+
+    merge_sort(&(q->head));
+}
+
+void merge_sort(list_ele_t **head)
+{
+    if (!(*head) || !(*head)->next)
+        return;
+
+    list_ele_t *fast = (*head)->next;
+    list_ele_t *slow = *head;
+
+    while (fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    fast = slow->next;
+    slow->next = NULL;
+    slow = (*head);
+
+    merge_sort(&slow);
+    merge_sort(&fast);
+
+    (*head) = NULL;
+    list_ele_t **ptr = head;
+    (*head)->next = (*ptr);
+
+    while (slow && fast) {
+        int compare = strcasecmp(slow->value, fast->value);
+        if (compare == 0 ? strcmp(slow->value, fast->value) < 0 : compare < 0) {
+            (*ptr)->next = slow;
+            slow = slow->next;
+        } else {
+            (*ptr)->next = fast;
+            fast = fast->next;
+        }
+        (*ptr) = (*ptr)->next;
+    }
+
+    if (slow)
+        (*ptr)->next = slow;
+    if (fast)
+        (*ptr)->next = fast;
+
+    (*head) = (*head)->next;
 }

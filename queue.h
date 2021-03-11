@@ -20,6 +20,7 @@ typedef struct ELE {
      */
     char value[0];
     struct ELE *next;
+    int size;
 } list_ele_t;
 
 /* Queue structure */
