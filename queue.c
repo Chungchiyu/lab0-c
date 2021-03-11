@@ -232,38 +232,17 @@ void mergeSort(list_ele_t **head)
     mergeSort(&slow);
     mergeSort(&fast);
 
-    //(*head) = NULL;
-    list_ele_t **ptr = NULL;
-    // head = ptr;
-    bool a = true;
-
     while (slow && fast) {
         int compare = strcasecmp(slow->value, fast->value);
         if (compare == 0 ? strcmp(slow->value, fast->value) < 0 : compare < 0) {
-            if (a)
-                (*ptr) = slow;
-            else
-                (*ptr)->next = slow;
-            slow = slow->next;
-        } else {
-            if (a)
-                (*ptr) = fast;
-            else
-                (*ptr)->next = fast;
-            fast = fast->next;
-        }
-
-        if (a) {
-            (*head)->next = (*ptr);
-            a = false;
-        } else
-            ptr = &((*ptr)->next);
+            (*head) = slow;
+	    slow = slow->next;
+	} else {
+	    (*head) = fast;
+	    fast = fast->next;
+	}
+	head = &((*head)->next);
     }
 
-    if (slow)
-        (*ptr)->next = slow;
-    if (fast)
-        (*ptr)->next = fast;
-
-    // head = &((*head)->next);
+    (*head) = slow ? slow : fast;
 }
