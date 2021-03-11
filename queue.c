@@ -16,8 +16,8 @@ queue_t *q_new()
     if (!q) {
         return NULL;
     }
+
     q->head = NULL;
-    // q->head->next = NULL;
     q->tail = NULL;
     q->size = 0;
     return q;
@@ -54,13 +54,19 @@ bool q_insert_head(queue_t *q, char *s)
     if (!q)
         return false;
 
-    int value_size = strlen(s) + 1;
-
-    list_ele_t *newh;
-    newh = malloc(sizeof(list_ele_t) + value_size);
-
+    list_ele_t *newh = malloc(sizeof(list_ele_t));
     if (!newh)
         return false;
+
+    size_t value_size = strlen(s) + 1;
+    newh->value = (char *) malloc(value_size * sizeof(char));
+
+    if (!newh->value) {
+        free(newh);
+        return false;
+    }
+    strcpy(newh->value, s);
+
 
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
@@ -70,7 +76,6 @@ bool q_insert_head(queue_t *q, char *s)
 
     if (q->size == 0)
         q->tail = newh;
-    q->head->size = value_size - 1;
     q->size++;
     return true;
 }
@@ -87,13 +92,17 @@ bool q_insert_tail(queue_t *q, char *s)
     if (!q)
         return false;
 
-    int value_size = strlen(s) + 1;
-
-    list_ele_t *newt;
-    newt = malloc(sizeof(list_ele_t) + value_size);
-
+    list_ele_t *newt = malloc(sizeof(list_ele_t));
     if (!newt)
         return false;
+
+    size_t value_size = strlen(s) + 1;
+    newt->value = (char *) malloc(value_size * sizeof(char));
+    if (!newt->value) {
+        free(newt);
+        return false;
+    }
+    strcpy(newt->value, s);
 
     if (!q->head)
         q_insert_head(q, s);
@@ -102,7 +111,6 @@ bool q_insert_tail(queue_t *q, char *s)
         q->tail->next = newt;
         q->tail = newt;
         q->size++;
-        q->head->size = value_size - 1;
     }
 
     /* TODO: You need to write the complete code for this function */
@@ -224,20 +232,32 @@ void mergeSort(list_ele_t **head)
     mergeSort(&slow);
     mergeSort(&fast);
 
-    (*head) = NULL;
-    list_ele_t **ptr = head;
-    (*head)->next = (*ptr);
+    //(*head) = NULL;
+    list_ele_t **ptr = NULL;
+    // head = ptr;
+    bool a = true;
 
     while (slow && fast) {
         int compare = strcasecmp(slow->value, fast->value);
         if (compare == 0 ? strcmp(slow->value, fast->value) < 0 : compare < 0) {
-            (*ptr)->next = slow;
+            if (a)
+                (*ptr) = slow;
+            else
+                (*ptr)->next = slow;
             slow = slow->next;
         } else {
-            (*ptr)->next = fast;
+            if (a)
+                (*ptr) = fast;
+            else
+                (*ptr)->next = fast;
             fast = fast->next;
         }
-        (*ptr) = (*ptr)->next;
+
+        if (a) {
+            (*head)->next = (*ptr);
+            a = false;
+        } else
+            ptr = &((*ptr)->next);
     }
 
     if (slow)
@@ -245,5 +265,5 @@ void mergeSort(list_ele_t **head)
     if (fast)
         (*ptr)->next = fast;
 
-    (*head) = (*head)->next;
+    // head = &((*head)->next);
 }
