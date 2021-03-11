@@ -65,8 +65,7 @@ bool q_insert_head(queue_t *q, char *s)
         free(newh);
         return false;
     }
-    strcpy(newh->value, s);
-
+    strncpy(newh->value, s, value_size);
 
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
@@ -102,7 +101,8 @@ bool q_insert_tail(queue_t *q, char *s)
         free(newt);
         return false;
     }
-    strcpy(newt->value, s);
+    newt->next = NULL;
+    strncpy(newt->value, s, value_size);
 
     if (!q->head)
         q_insert_head(q, s);
@@ -236,12 +236,12 @@ void mergeSort(list_ele_t **head)
         int compare = strcasecmp(slow->value, fast->value);
         if (compare == 0 ? strcmp(slow->value, fast->value) < 0 : compare < 0) {
             (*head) = slow;
-	    slow = slow->next;
-	} else {
-	    (*head) = fast;
-	    fast = fast->next;
-	}
-	head = &((*head)->next);
+            slow = slow->next;
+        } else {
+            (*head) = fast;
+            fast = fast->next;
+        }
+        head = &((*head)->next);
     }
 
     (*head) = slow ? slow : fast;
