@@ -198,14 +198,14 @@ void q_sort(queue_t *q)
     if (!q || q->size < 2)
         return;
 
-    merge_sort(&(q->head));
+    mergeSort(&(q->head));
 
     while (q->tail->next) {
         q->tail = q->tail->next;
     }
 }
 
-void merge_sort(list_ele_t **head)
+void mergeSort(list_ele_t **head)
 {
     if (!(*head) || !(*head)->next)
         return;
@@ -221,8 +221,8 @@ void merge_sort(list_ele_t **head)
     slow->next = NULL;
     slow = (*head);
 
-    merge_sort(&slow);
-    merge_sort(&fast);
+    mergeSort(&slow);
+    mergeSort(&fast);
 
     (*head) = NULL;
     list_ele_t **ptr = head;
