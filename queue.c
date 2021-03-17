@@ -65,7 +65,7 @@ bool q_insert_head(queue_t *q, char *s)
         free(newh);
         return false;
     }
-    strcpy(newh->value, s);
+    strncpy(newh->value, s, value_size);
 
 
     /* Don't forget to allocate space for the string and copy it */
@@ -102,7 +102,7 @@ bool q_insert_tail(queue_t *q, char *s)
         free(newt);
         return false;
     }
-    strcpy(newt->value, s);
+    strncpy(newt->value, s, value_size);
 
     if (!q->head)
         q_insert_head(q, s);
@@ -232,38 +232,25 @@ void mergeSort(list_ele_t **head)
     mergeSort(&slow);
     mergeSort(&fast);
 
-    //(*head) = NULL;
     list_ele_t **ptr = NULL;
-    // head = ptr;
-    bool a = true;
+    bool head_placed = false;
 
     while (slow && fast) {
         int compare = strcasecmp(slow->value, fast->value);
         if (compare == 0 ? strcmp(slow->value, fast->value) < 0 : compare < 0) {
-            if (a)
-                (*ptr) = slow;
-            else
-                (*ptr)->next = slow;
+            (*ptr)->next = slow;
             slow = slow->next;
         } else {
-            if (a)
-                (*ptr) = fast;
-            else
-                (*ptr)->next = fast;
+            (*ptr)->next = fast;
             fast = fast->next;
         }
 
-        if (a) {
-            (*head)->next = (*ptr);
-            a = false;
-        } else
-            ptr = &((*ptr)->next);
+        if (!head_placed) {
+            (*head) = (*ptr)->next;
+            head_placed = true;
+        }
+        (*ptr) = (*ptr)->next;
     }
 
-    if (slow)
-        (*ptr)->next = slow;
-    if (fast)
-        (*ptr)->next = fast;
-
-    // head = &((*head)->next);
+    (*ptr)->next = slow ? slow : fast;
 }
