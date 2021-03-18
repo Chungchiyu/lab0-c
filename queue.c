@@ -66,10 +66,6 @@ bool q_insert_head(queue_t *q, char *s)
         return false;
     }
     strncpy(newh->value, s, value_size);
-<<<<<<< HEAD
-
-=======
->>>>>>> 95b66861b5fbdfb466190aa918e1e8f6cfbda079
 
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
@@ -105,10 +101,7 @@ bool q_insert_tail(queue_t *q, char *s)
         free(newt);
         return false;
     }
-<<<<<<< HEAD
-=======
-    newt->next = NULL;
->>>>>>> 95b66861b5fbdfb466190aa918e1e8f6cfbda079
+
     strncpy(newt->value, s, value_size);
 
     if (!q->head)
